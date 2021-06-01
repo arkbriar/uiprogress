@@ -246,7 +246,7 @@ func (b *Bar) UpdateTimeElapsed() {
 	b.mtx.Lock()
 	defer b.mtx.Unlock()
 
-	if b.current > b.Total {
+	if b.current >= b.Total {
 		return
 	}
 
