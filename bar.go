@@ -104,15 +104,13 @@ func (b *Bar) Incr() bool {
 	b.mtx.Lock()
 	defer b.mtx.Unlock()
 
+	b.updateTimeElapsed()
+
 	n := b.current + 1
 	if n > b.Total {
 		return false
 	}
-	var t time.Time
-	if b.TimeStarted == t {
-		b.TimeStarted = time.Now()
-	}
-	b.timeElapsed = time.Since(b.TimeStarted)
+
 	b.current = n
 	return true
 }
@@ -234,4 +232,19 @@ func (b *Bar) TimeElapsed() time.Duration {
 // TimeElapsedString returns the formatted string represenation of the time elapsed
 func (b *Bar) TimeElapsedString() string {
 	return strutil.PrettyTime(b.TimeElapsed())
+}
+
+func (b *Bar) updateTimeElapsed() {
+	if b.TimeStarted.IsZero() {
+		b.TimeStarted = time.Now()
+	}
+	b.timeElapsed = time.Since(b.TimeStarted)
+}
+
+// UpdateTimeElapsed updates the time elapsed
+func (b *Bar) UpdateTimeElapsed() {
+	b.mtx.Lock()
+	defer b.mtx.Unlock()
+
+	b.updateTimeElapsed()
 }
