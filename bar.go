@@ -104,12 +104,12 @@ func (b *Bar) Incr() bool {
 	b.mtx.Lock()
 	defer b.mtx.Unlock()
 
-	b.updateTimeElapsed()
-
 	n := b.current + 1
 	if n > b.Total {
 		return false
 	}
+
+	b.updateTimeElapsed()
 
 	b.current = n
 	return true
@@ -245,6 +245,10 @@ func (b *Bar) updateTimeElapsed() {
 func (b *Bar) UpdateTimeElapsed() {
 	b.mtx.Lock()
 	defer b.mtx.Unlock()
+
+	if b.current > b.Total {
+		return
+	}
 
 	b.updateTimeElapsed()
 }
